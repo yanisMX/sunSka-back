@@ -17,7 +17,7 @@ export const registerProduit = async (req, res) => {
 export const getProduit = async (req, res) => {
     const nom = req.body;
     try{
-    const produit = await db.Produit.findOne({ where: { nom } });
+    const produit = await db.Produit.findOne({ where: { nom : nom } });
     if (produit) {
         res.status(201).json(produit);
       } else {
@@ -47,7 +47,7 @@ export const getAllProduit = async (req, res) => {
 export const deleteProduit = async (req, res) => {
     const nom = req.body;
     try{
-        const produit_delete = await db.Produit.destroy({ where: { nom } });
+        const produit_delete = await db.Produit.destroy({ where: { nom : nom } });
         if (produit_delete) {
             res.status(201);
           } else {
