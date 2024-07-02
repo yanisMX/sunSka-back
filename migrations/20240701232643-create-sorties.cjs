@@ -1,33 +1,35 @@
-// migrations/20240701123700-create-ventes.js
+// migrations/20240701232641-create-sorties.js
 "use strict";
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("Ventes", {
+    await queryInterface.createTable("Sorties", {
       id: {
         type: Sequelize.INTEGER,
         autoIncrement: true,
         primaryKey: true,
       },
-      idQuantite: {
+      idStock: {
         type: Sequelize.INTEGER,
+        allowNull: false,
         references: {
-          model: 'Quantites',
+          model: 'Stocks',
           key: 'id',
         },
       },
       date: {
         type: Sequelize.DATE,
-        defaultValue: Sequelize.NOW,
+        allowNull: false,
       },
       quantite: {
         type: Sequelize.INTEGER,
+        allowNull: false,
       },
     });
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("Ventes");
+    await queryInterface.dropTable("Sorties");
   },
 };

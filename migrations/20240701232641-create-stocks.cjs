@@ -1,24 +1,26 @@
-// migrations/20240701123600-create-quantites.js
+// migrations/20240701232639-create-stocks.js
 "use strict";
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("Quantites", {
+    await queryInterface.createTable("Stocks", {
       id: {
         type: Sequelize.INTEGER,
         autoIncrement: true,
         primaryKey: true,
       },
-      idBoisson: {
+      idProduit: {
         type: Sequelize.INTEGER,
+        allowNull: false,
         references: {
-          model: 'Boissons',
+          model: 'Produits',
           key: 'id',
         },
       },
       idBar: {
         type: Sequelize.INTEGER,
+        allowNull: false,
         references: {
           model: 'Bars',
           key: 'id',
@@ -26,11 +28,16 @@ module.exports = {
       },
       quantite: {
         type: Sequelize.INTEGER,
+        allowNull: false,
+      },
+      seuilAlerte: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
       },
     });
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("Quantites");
+    await queryInterface.dropTable("Stocks");
   },
 };

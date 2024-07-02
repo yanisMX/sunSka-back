@@ -1,4 +1,4 @@
-// migrations/20240701123456-create-utilisateurs.js
+// migrations/20240701232643-create-utilisateurs.js
 "use strict";
 
 /** @type {import('sequelize-cli').Migration} */
@@ -15,17 +15,17 @@ module.exports = {
         allowNull: false,
         unique: true,
       },
-      password_hash: {
+      passWd_hashed: {
         type: Sequelize.STRING,
         allowNull: false,
       },
       permission: {
         type: Sequelize.STRING,
         allowNull: false,
-        defaultValue: 'user',
       },
       idBar: {
         type: Sequelize.INTEGER,
+        allowNull: false,
         references: {
           model: 'Bars',
           key: 'id',

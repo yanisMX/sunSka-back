@@ -1,42 +1,40 @@
 // models/utilisateur.js
 import { DataTypes } from 'sequelize';
+import sequelize from '../databaseConnexion.js';
+import Bar from './bar.js';
 
-export default (sequelize) => {
-  const Utilisateur = sequelize.define('Utilisateur', {
-    id: {
-      type: DataTypes.INTEGER,
-      autoIncrement: true,
-      primaryKey: true,
+const Utilisateur = sequelize.define('Utilisateur', {
+  id: {
+    type: DataTypes.INTEGER,
+    autoIncrement: true,
+    primaryKey: true,
+  },
+  userName: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    unique: true,
+  },
+  passWd_hashed: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  permission: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  idBar: {
+    type: DataTypes.INTEGER,
+    references: {
+      model: Bar,
+      key: 'id',
     },
-    username: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      unique: true,
-    },
-    password_hash: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    role: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      defaultValue: 'user', 
-    },
-    idBar: {
-      type: DataTypes.INTEGER,
-      references: {
-        model: 'Bars', 
-        key: 'id',
-      },
-    },
-  }, {
-    tableName: 'Utilisateurs',
-    timestamps: false,
-  });
+    allowNull: false,
+  },
+}, {
+  tableName: 'Utilisateurs',
+  timestamps: false,
+});
 
-  Utilisateur.associate = (models) => {
-    Utilisateur.belongsTo(models.Bar, { foreignKey: 'idBar' });
-  };
+Bar.hasMany(Utilisateur, { foreignKey: 'idBar' });
 
-  return Utilisateur;
-};
+export default Utilisateur;

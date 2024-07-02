@@ -1,4 +1,4 @@
-// migrations/20240701123500-create-bars.js
+// migrations/20240701232642-create-bars.js
 "use strict";
 
 /** @type {import('sequelize-cli').Migration} */

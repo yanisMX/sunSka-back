@@ -1,10 +1,8 @@
-// app.js
 import express from 'express';
 import bodyParser from 'body-parser';
-import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
-import db from './models/index.js';
 import dotenv from 'dotenv';
+import authRoutes from './routes/auth.js';
+import authenticateToken from './middlewares/auth.js';
 
 dotenv.config();
 
@@ -17,41 +15,12 @@ app.get('/', (req, res) => {
   res.send('Hello, SunSka!');
 });
 
-// Route pour créer un utilisateur
-app.post('/users', async (req, res) => {
-  const { username, password, idBar } = req.body;
-  const hashedPassword = await bcrypt.hash(password, 10);
+// Routes d'authentification
+app.use('/auth', authRoutes);
 
-  try {
-    const user = await db.Utilisateur.create({
-      username,
-      password_hash: hashedPassword,
-      idBar
-    });
-    res.status(201).json(user);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Internal server error' });
-  }
-});
-
-// Route pour authentifier un utilisateur
-app.post('/login', async (req, res) => {
-  const { username, password } = req.body;
-
-  try {
-    const user = await db.Utilisateur.findOne({ where: { username } });
-
-    if (user && await bcrypt.compare(password, user.password_hash)) {
-      const token = jwt.sign({ id: user.id, username: user.username }, 'your_jwt_secret', { expiresIn: '1h' });
-      res.json({ token });
-    } else {
-      res.status(401).json({ error: 'Invalid credentials' });
-    }
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Internal server error' });
-  }
+// Exemple de route protégée
+app.get('/protected', authenticateToken, (req, res) => {
+  res.send('This is a protected route');
 });
 
 app.listen(port, () => {

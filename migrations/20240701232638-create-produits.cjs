@@ -1,10 +1,10 @@
-// migrations/20240701123530-create-boissons.js
+// migrations/20240701232638-create-produits.js
 "use strict";
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("Boissons", {
+    await queryInterface.createTable("Produits", {
       id: {
         type: Sequelize.INTEGER,
         autoIncrement: true,
@@ -14,16 +14,10 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      logo: {
-        type: Sequelize.STRING,
-      },
-      quantiteLimite: {
-        type: Sequelize.INTEGER,
-      },
     });
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("Boissons");
+    await queryInterface.dropTable("Produits");
   },
 };

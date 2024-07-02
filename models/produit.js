@@ -1,8 +1,8 @@
-// models/bar.js
+// models/produit.js
 import { DataTypes } from 'sequelize';
 import sequelize from '../databaseConnexion.js';
 
-const Bar = sequelize.define('Bar', {
+const Produit = sequelize.define('Produit', {
   id: {
     type: DataTypes.INTEGER,
     autoIncrement: true,
@@ -13,8 +13,8 @@ const Bar = sequelize.define('Bar', {
     allowNull: false,
   },
 }, {
-  tableName: 'Bars',
+  tableName: 'Produits',
   timestamps: false,
 });
 
-export default Bar;
+export default Produit;

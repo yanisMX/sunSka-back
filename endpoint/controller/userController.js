@@ -1,12 +1,16 @@
 // controllers/userController.js
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import db from '../models/index.js';
+import db from '../../models/index.js';
 
 export const registerUser = async (req, res) => {
   const { userName, password, idBar } = req.body;
   const hashedPassword = await bcrypt.hash(password, 10);
 
+  if (req.user.role !== 'admin') {
+    return res.status(403).json({ error: 'Access denied' });
+  }
+  
   try {
     const user = await db.Utilisateur.create({
       userName,
