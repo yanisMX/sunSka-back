@@ -17,6 +17,11 @@ export default (sequelize) => {
       type: DataTypes.STRING,
       allowNull: false,
     },
+    role: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      defaultValue: 'user', 
+    },
     idBar: {
       type: DataTypes.INTEGER,
       references: {
