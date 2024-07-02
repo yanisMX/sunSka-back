@@ -50,3 +50,17 @@ export const changeStatus = async (req, res) => {
         }
 };
 
+export const getOneEntree = async (req, res) => {
+    const id = req.body;
+    try{
+        const entree = await db.Entree.findOne({ where: { id : id } });
+        if (entree) {
+            res.status(201).json(list_entree);
+          } else {
+            res.status(401).json({ error: 'Aucune entrée trouvée' });
+          }
+        } catch (err) {
+          console.error(err);
+          res.status(500).json({ error: 'Internal server error' });
+        }
+};
