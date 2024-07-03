@@ -41,3 +41,11 @@ export const loginUser = async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 };
+
+export const deleteUser = async (id) => {
+  try{
+    const user_delete = await db.Utilisateur.destroy({ where: { id : id } });
+  } catch (err) {
+    console.error(err);
+  }
+}

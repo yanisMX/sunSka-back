@@ -40,6 +40,9 @@ export const changeStatus = async (req, res) => {
         if (entree) {
             entree.status = status;
             await entree.save();
+            if (status==="Validé"){
+                stockController.updateQuantite(entree.quantite, entree.idStock)
+            }
             res.status(201);
           } else {
             res.status(401).json({ error: 'Aucune entrée trouvée' });

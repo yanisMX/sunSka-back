@@ -10,6 +10,8 @@ export const registerSortie = async (req, res) => {
             idStock,
             Date
         });
+        stockController.updateQuantite(quantite, idStock)
+
         res.status(201).json(sortie);
     } catch (err) {
         console.error(err);
@@ -55,8 +57,8 @@ export const deleteLatestSortie = async (req, res) => {
             order: [ [ 'id', 'DESC' ]]
         })[0];
         await toDelete.destroy();
-
         stockController.updateQuantite(-1, toDelete.idStock)
+        res.status(201)
 
     } catch (err) {
         console.error(err);

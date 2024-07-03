@@ -85,3 +85,59 @@ export const updateQuantite = async (value, idStock) => {
         console.error(err);
     }
 };
+
+export const deleteStock = async (req, res) => {
+    const id = req.body;
+    try{
+        let list_entree = await db.Entree.findAll({ where: {idStock: id}});
+        let list_entree_ids = list_entree.map(entree => entree.id)
+        await db.Entree.destroy({
+            where: {
+                id: list_entree_ids
+            }
+        });
+
+        const list_sortie = await db.Sortie.findAll({ where: {idStock: id}});
+        let list_sortie_ids = list_sortie.map(sortie => sortie.id)
+        await db.Sortie.destroy({
+            where: {
+                id: list_sortie_ids
+            }
+        });
+
+        let stock_delete = await db.Stock.destroy({ where: { id : id } });
+        if (stock_delete) {
+            res.status(201);
+        } else {
+            res.status(401).json({ error: 'Aucun produit trouver' });
+        }
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
+export const BackDeleteStock = async (id) => {
+    try{
+        let list_entree = await db.Entree.findAll({ where: {idStock: id}});
+        let list_entree_ids = list_entree.map(entree => entree.id)
+        await db.Entree.destroy({
+            where: {
+                id: list_entree_ids
+            }
+        });
+
+        const list_sortie = await db.Sortie.findAll({ where: {idStock: id}});
+        let list_sortie_ids = list_sortie.map(sortie => sortie.id)
+        await db.Sortie.destroy({
+            where: {
+                id: list_sortie_ids
+            }
+        });
+
+        let stock_delete = await db.Stock.destroy({ where: { id : id } });
+
+    } catch (err) {
+        console.error(err);
+    }
+};
