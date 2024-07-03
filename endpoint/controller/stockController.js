@@ -75,3 +75,13 @@ export const getAllStock = async (req, res) => {
           res.status(500).json({ error: 'Internal server error' });
         }
 };
+
+export const updateQuantite = async (value, idStock) => {
+    try{
+        let stock = await db.Stock.findOne({ where: { id : idStock } });
+        stock.quantite = stock.quantite + value
+        await stock.save()
+    } catch (err) {
+        console.error(err);
+    }
+};

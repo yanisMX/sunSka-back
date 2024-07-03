@@ -39,7 +39,7 @@ export const changeStatus = async (req, res) => {
         const entree = await db.Entree.findOne({ where: { id : id } });
         if (entree) {
             entree.status = status;
-            entree.save();
+            await entree.save();
             res.status(201);
           } else {
             res.status(401).json({ error: 'Aucune entrée trouvée' });
@@ -55,7 +55,7 @@ export const getOneEntree = async (req, res) => {
     try{
         const entree = await db.Entree.findOne({ where: { id : id } });
         if (entree) {
-            res.status(201).json(list_entree);
+            res.status(201).json(entree);
           } else {
             res.status(401).json({ error: 'Aucune entrée trouvée' });
           }
