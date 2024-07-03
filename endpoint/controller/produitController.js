@@ -14,7 +14,7 @@ export const registerProduit = async (req, res) => {
     }
 };
 
-export const getProduit = async (req, res) => {
+export const getProduitByName = async (req, res) => {
     const nom = req.body;
     try{
     const produit = await db.Produit.findOne({ where: { nom : nom } });
@@ -26,6 +26,21 @@ export const getProduit = async (req, res) => {
     } catch (err) {
       console.error(err);
       res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
+export const getProduitById = async (req, res) => {
+    const id = req.body;
+    try{
+        const produit = await db.Produit.findOne({ where: { id : id } });
+        if (produit) {
+            res.status(201).json(produit);
+        } else {
+            res.status(401).json({ error: 'Aucun produit trouver' });
+        }
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Internal server error' });
     }
 };
 
@@ -45,9 +60,9 @@ export const getAllProduit = async (req, res) => {
 };
 
 export const deleteProduit = async (req, res) => {
-    const nom = req.body;
+    const id = req.body;
     try{
-        const produit_delete = await db.Produit.destroy({ where: { nom : nom } });
+        const produit_delete = await db.Produit.destroy({ where: { id : id } });
         if (produit_delete) {
             res.status(201);
           } else {

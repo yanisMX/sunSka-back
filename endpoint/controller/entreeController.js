@@ -18,7 +18,7 @@ export const registerEntree = async (req, res) => {
     }
 };
 
-export const getEntree = async (req, res) => {
+export const getEntreeByStock = async (req, res) => {
     const idStock = req.body;
     try{
     const list_entree = await db.Entree.findAll({ where: { idStock : idStock } });
