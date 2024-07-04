@@ -17,7 +17,12 @@ app.get('/', (req, res) => {
 
 // Routes d'authentification
 app.use('/auth', authRoutes);
-app.use('/products',productRoutes)
+
+app.use('/bar', barRoutes);
+app.use('/entree', entreeRoutes);
+app.use('/produit', produitRoutes);
+app.use('/sortie', sortieRoutes);
+app.use('/stick', stockRoutes);
 
 // Exemple de route protégée
 app.get('/protected', authenticateToken, (req, res) => {
