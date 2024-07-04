@@ -1,4 +1,5 @@
 import db from '../../models/index.js';
+import { Sequelize, Op } from 'sequelize';
 
 export const registerEntree = async (req, res) => {
     const {quantite, idStock} = req.body;
@@ -66,4 +67,101 @@ export const getOneEntree = async (req, res) => {
           console.error(err);
           res.status(500).json({ error: 'Internal server error' });
         }
+};
+
+export const countUrgentEntree = async (idBar) => {
+    try {
+        const list_stock = await db.Stock.findAll({
+            where: { idBar: idBar },
+            attributes: ['id']
+        });
+        const stockIds = list_stock.map(stock => stock.id);
+        if (stockIds.length === 0) {
+            return 0;
+        }
+        const entreeCounts = await db.Entree.findAll({
+            where: {
+                idStock: stockIds,
+                status: "Transmise"
+            },
+            attributes: [[Sequelize.fn('COUNT', Sequelize.col('idStock')), 'nbAlertes']]
+        });
+        if (entreeCounts.length === 0) {
+            return 0;
+        }
+        return entreeCounts[0].dataValues.nbAlertes;
+    } catch (err) {
+        console.error(err);
+    }
+};
+
+export const getAllEntreeFullInfo = async (req, res) => {
+    try{
+        const entrees = await db.Entree.findAll({
+            include: [{
+                model: db.Stock,
+                include: [{
+                    model: db.Bar,
+                    attributes: [['nom', 'nomBar']]
+                }, {
+                    model: db.Produit,
+                    attributes: [['nom', 'nomProduit']]
+                }],
+                attributes: []
+            }],
+            attributes: ['id', 'status']
+        });
+
+        res.status(201).json(entrees);
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
+
+export const getLatestEntreeByProduct = async (req, res) => {
+        const { idBar } = req.body;
+        try {
+            const latestEntriesSubQuery = db.Entree.findAll({
+                attributes: [
+                    'idStock',
+                    [Sequelize.fn('MAX', Sequelize.col('date')), 'maxDate']
+                ],
+                include: [{
+                    model: db.Stock,
+                    where: { idBar },
+                    attributes: []
+                }],
+                group: ['idStock'],
+                raw: true,
+                subQuery: false
+            });
+
+            const entrees = await db.Entree.findAll({
+                include: [{
+                    model: db.Stock,
+                    where: { idBar },
+                    include: [{
+                        model: db.Bar,
+                        attributes: [['nom', 'nomBar']]
+                    }, {
+                        model: db.Produit,
+                        attributes: [['nom', 'nomProduit']]
+                    }],
+                    attributes: []
+                }],
+                where: {
+                    [Op.and]: Sequelize.literal(`(idStock, createdAt) IN (SELECT idStock, MAX(date) FROM Entrees INNER JOIN Stocks ON Entrees.idStock = Stocks.id WHERE Stocks.idBar = ${idBar} GROUP BY idStock)`)
+                },
+                attributes: ['id', 'status', 'idStock', 'createdAt']
+            });
+
+        res.status(201).json(entrees);
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Internal server error' });
+    }
 };

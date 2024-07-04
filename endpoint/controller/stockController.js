@@ -1,13 +1,14 @@
 import db from '../../models/index.js';
+import { Sequelize, Op } from 'sequelize';
 
 export const registerStock = async (req, res) => {
-    const {idProduit, idBar, quantite, seuilAlerte} = req.body;
+    const {idProduit, idBar, seuilAlerte} = req.body;
 
     try {
       const stock = await db.Stock.create({
         idProduit,
         idBar,
-        quantite,
+        quantite:0,
         seuilAlerte
       });
       res.status(201).json(stock);
@@ -139,5 +140,21 @@ export const BackDeleteStock = async (id) => {
 
     } catch (err) {
         console.error(err);
+    }
+};
+
+export const getStocksWithProducts = async (req, res) => {
+    try {
+        const stocks = await db.Stock.findAll({
+            include: [{
+                model: db.Produit,
+                attributes: [['nom', 'nomProduit']]
+            }],
+            attributes: ['id', 'quantite', 'idBar', 'idProduit', 'seuilAlerte']
+        });
+        res.status(200).json(stocks);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Internal server error' });
     }
 };

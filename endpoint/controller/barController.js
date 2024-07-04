@@ -1,6 +1,8 @@
 import db from '../../models/index.js';
 import stockController from '../../endpoint/controller/stockController.js';
 import userController from '../../endpoint/controller/userController.js';
+import entreeController from '../../endpoint/controller/entreeController.js';
+import { Sequelize, Op } from 'sequelize';
 
 export const registerBar = async (req, res) => {
     const nom = req.body;
@@ -46,11 +48,33 @@ export const getBarById = async (req, res) => {
     }
 };
 
-export const getAllBar= async (req, res) => {
+export const getAllBar = async (req, res) => {
     try{
         const list_bar = await db.Bar.findAll();
         if (list_bar) {
             res.status(201).json(list_bar);
+        } else {
+            res.status(401).json({ error: 'Aucune entrée trouvée' });
+        }
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
+export const getAllBarAndUrgentEntree = async (req, res) => {
+    try{
+        const list_bar = await db.Bar.findAll();
+        let list_bar_complete = [];
+        for (const bar of list_bar){
+            list_bar_complete.push({
+                id: bar.id,
+                nom: bar.nom,
+                nbAlertes: entreeController.countUrgentEntree(bar.id)
+            })
+        };
+        if (list_bar_complete) {
+            res.status(201).json(list_bar_complete);
         } else {
             res.status(401).json({ error: 'Aucune entrée trouvée' });
         }
@@ -85,8 +109,6 @@ export const getAllBarAndNbLines = async (req, res) => {
                 nom: bar.nom,
                 nbProduits: stockCountMap[bar.id] || 0
             }));
-
-            console.log(result);
 
         res.status(201).json(list_bar);
         } else {

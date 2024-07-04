@@ -2,6 +2,7 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import db from '../../models/index.js';
+import { Sequelize, Op } from 'sequelize';
 
 export const registerUser = async (req, res) => {
   const { userName, password, idBar } = req.body;

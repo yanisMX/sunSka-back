@@ -1,5 +1,6 @@
 import db from '../../models/index.js';
 import stockController from '../../endpoint/controller/stockController.js';
+import { Sequelize, Op } from 'sequelize';
 
 export const registerSortie = async (req, res) => {
     const {quantite, idStock} = req.body;
